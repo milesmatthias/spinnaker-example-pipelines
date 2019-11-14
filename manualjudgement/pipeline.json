@@ -1,0 +1,89 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "stages": [
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifests": [
+        {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "manual-judgement-nginx"
+            },
+            "name": "manual-judgement-nginx-deployment"
+          },
+          "spec": {
+            "replicas": 2,
+            "selector": {
+              "matchLabels": {
+                "app": "manual-judgement-nginx"
+              }
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "manual-judgement-nginx"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "nginx:1.7.9",
+                    "name": "manual-judgement-nginx",
+                    "ports": [
+                      {
+                        "containerPort": 80
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "moniker": {
+        "app": "manualjudgement"
+      },
+      "name": "Deploy (Manifest)",
+      "refId": "1",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "2"
+      ],
+      "source": "text",
+      "type": "deployManifest"
+    },
+    {
+      "failPipeline": true,
+      "instructions": "Do you want to proceed to deploying?",
+      "judgmentInputs": [
+        {
+          "value": "Yes"
+        },
+        {
+          "value": "No"
+        }
+      ],
+      "name": "Manual Judgment",
+      "notifications": [],
+      "refId": "2",
+      "requisiteStageRefIds": [],
+      "stageEnabled": {
+        "type": "expression"
+      },
+      "type": "manualJudgment"
+    }
+  ],
+  "triggers": [],
+  "updateTs": "1573760491000"
+}

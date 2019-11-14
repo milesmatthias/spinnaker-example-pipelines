@@ -1,0 +1,77 @@
+{
+  "appConfig": {},
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "stages": [
+    {
+      "account": "default",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifests": [
+        {
+          "apiVersion": "apps/v1",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "wait-nginx"
+            },
+            "name": "wait-nginx-deployment"
+          },
+          "spec": {
+            "replicas": 2,
+            "selector": {
+              "matchLabels": {
+                "app": "wait-nginx"
+              }
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "wait-nginx"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "nginx:1.7.9",
+                    "name": "wait-nginx",
+                    "ports": [
+                      {
+                        "containerPort": 80
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "moniker": {
+        "app": "wait"
+      },
+      "name": "Deploy (Manifest)",
+      "refId": "1",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "source": "text",
+      "type": "deployManifest"
+    },
+    {
+      "isNew": true,
+      "name": "Wait",
+      "refId": "3",
+      "requisiteStageRefIds": [],
+      "type": "wait",
+      "waitTime": 30
+    }
+  ],
+  "triggers": [],
+  "updateTs": "1573760491000"
+}
