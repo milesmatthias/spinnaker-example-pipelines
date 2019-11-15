@@ -1,0 +1,470 @@
+{
+  "appConfig": {},
+  "expectedArtifacts": [],
+  "keepWaitingPipelines": false,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "parameterConfig": [],
+  "stages": [
+    {
+      "account": "app-cluster",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifestArtifactId": "422454b3-ac78-4fe2-aee8-a74cb4a956fe",
+      "manifests": [
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus-baseline"
+            },
+            "name": "ex-rails-prometheus-baseline",
+            "namespace": "default"
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "ex-rails",
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "selector": {
+              "app": "ex-rails-prometheus-baseline"
+            },
+            "type": "ClusterIP"
+          }
+        },
+        {
+          "apiVersion": "apps/v1beta2",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus-baseline"
+            },
+            "name": "ex-rails-prometheus-baseline",
+            "namespace": "default"
+          },
+          "spec": {
+            "selector": {
+              "matchLabels": {
+                "app": "ex-rails-prometheus-baseline"
+              }
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "ex-rails-prometheus-baseline"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "milesmatthias/ex-rails-prometheus:37e7bca",
+                    "name": "ex-rails-prometheus-baseline",
+                    "ports": [
+                      {
+                        "containerPort": 8080,
+                        "name": "ex-rails",
+                        "protocol": "TCP"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "apiVersion": "monitoring.coreos.com/v1",
+          "kind": "ServiceMonitor",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus-baseline",
+              "release": "prometheus-operator"
+            },
+            "name": "ex-rails-prometheus-metrics"
+          },
+          "spec": {
+            "endpoints": [
+              {
+                "interval": "10s",
+                "path": "/metrics",
+                "targetPort": 8080
+              }
+            ],
+            "selector": {
+              "matchLabels": {
+                "app": "ex-rails-prometheus-baseline"
+              },
+              "namespaceSelector": {
+                "any": true
+              }
+            }
+          }
+        }
+      ],
+      "moniker": {
+        "app": "ex-rails-prometheus"
+      },
+      "name": "Deploy Baseline",
+      "refId": "2",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requiredArtifactIds": [],
+      "requisiteStageRefIds": [],
+      "skipExpressionEvaluation": false,
+      "source": "text",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false,
+          "services": []
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "app-cluster",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifestArtifactId": "e894a742-d5da-46ca-9c06-a4da46f02208",
+      "manifests": [
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus-canary"
+            },
+            "name": "ex-rails-prometheus-canary",
+            "namespace": "default"
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "ex-rails",
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "selector": {
+              "app": "ex-rails-prometheus-canary"
+            },
+            "type": "ClusterIP"
+          }
+        },
+        {
+          "apiVersion": "apps/v1beta2",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus-canary"
+            },
+            "name": "ex-rails-prometheus-canary",
+            "namespace": "default"
+          },
+          "spec": {
+            "selector": {
+              "matchLabels": {
+                "app": "ex-rails-prometheus-canary"
+              }
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "ex-rails-prometheus-canary"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "milesmatthias/ex-rails-prometheus:latest",
+                    "name": "ex-rails-prometheus",
+                    "ports": [
+                      {
+                        "containerPort": 8080,
+                        "name": "ex-rails",
+                        "protocol": "TCP"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "apiVersion": "monitoring.coreos.com/v1",
+          "kind": "ServiceMonitor",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus-canary",
+              "release": "prometheus-operator"
+            },
+            "name": "ex-rails-prometheus-metrics-canary"
+          },
+          "spec": {
+            "endpoints": [
+              {
+                "interval": "10s",
+                "path": "/metrics",
+                "targetPort": 8080
+              }
+            ],
+            "selector": {
+              "matchLabels": {
+                "app": "ex-rails-prometheus-canary"
+              },
+              "namespaceSelector": {
+                "any": true
+              }
+            }
+          }
+        }
+      ],
+      "moniker": {
+        "app": "ex-rails-prometheus"
+      },
+      "name": "Deploy Canary",
+      "refId": "7",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requiredArtifactIds": [],
+      "requisiteStageRefIds": [],
+      "skipExpressionEvaluation": false,
+      "source": "text",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "app-cluster",
+      "cloudProvider": "kubernetes",
+      "manifestArtifactAccount": "embedded-artifact",
+      "manifestArtifactId": "422454b3-ac78-4fe2-aee8-a74cb4a956fe",
+      "manifests": [
+        {
+          "apiVersion": "v1",
+          "kind": "Service",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus"
+            },
+            "name": "ex-rails-prometheus",
+            "namespace": "default"
+          },
+          "spec": {
+            "ports": [
+              {
+                "name": "ex-rails",
+                "port": 8080,
+                "protocol": "TCP"
+              }
+            ],
+            "selector": {
+              "app": "ex-rails-prometheus"
+            },
+            "type": "ClusterIP"
+          }
+        },
+        {
+          "apiVersion": "apps/v1beta2",
+          "kind": "Deployment",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus"
+            },
+            "name": "ex-rails-prometheus",
+            "namespace": "default"
+          },
+          "spec": {
+            "selector": {
+              "matchLabels": {
+                "app": "ex-rails-prometheus"
+              }
+            },
+            "template": {
+              "metadata": {
+                "labels": {
+                  "app": "ex-rails-prometheus"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "image": "milesmatthias/ex-rails-prometheus:latest",
+                    "name": "ex-rails-prometheus",
+                    "ports": [
+                      {
+                        "containerPort": 8080,
+                        "name": "ex-rails",
+                        "protocol": "TCP"
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "apiVersion": "monitoring.coreos.com/v1",
+          "kind": "ServiceMonitor",
+          "metadata": {
+            "labels": {
+              "app": "ex-rails-prometheus",
+              "release": "prometheus-operator"
+            },
+            "name": "ex-rails-prometheus-metrics"
+          },
+          "spec": {
+            "endpoints": [
+              {
+                "interval": "10s",
+                "path": "/metrics",
+                "targetPort": 8080
+              }
+            ],
+            "selector": {
+              "matchLabels": {
+                "app": "ex-rails-prometheus"
+              },
+              "namespaceSelector": {
+                "any": true
+              }
+            }
+          }
+        }
+      ],
+      "moniker": {
+        "app": "ex-rails-prometheus"
+      },
+      "name": "Deploy to Devint",
+      "refId": "9",
+      "relationships": {
+        "loadBalancers": [],
+        "securityGroups": []
+      },
+      "requisiteStageRefIds": [
+        "12"
+      ],
+      "skipExpressionEvaluation": false,
+      "source": "text",
+      "trafficManagement": {
+        "enabled": false,
+        "options": {
+          "enableTraffic": false,
+          "services": []
+        }
+      },
+      "type": "deployManifest"
+    },
+    {
+      "account": "default",
+      "app": "ex-rails-prometheus",
+      "cloudProvider": "kubernetes",
+      "kinds": [
+        "deployment",
+        "service",
+        "ServiceMonitor"
+      ],
+      "labelSelectors": {
+        "selectors": [
+          {
+            "key": "app",
+            "kind": "EQUALS",
+            "values": [
+              "ex-rails-prometheus-baseline"
+            ]
+          }
+        ]
+      },
+      "location": "default",
+      "mode": "label",
+      "name": "Delete Baseline",
+      "options": {
+        "cascading": true
+      },
+      "refId": "10",
+      "requisiteStageRefIds": [
+        "12"
+      ],
+      "type": "deleteManifest"
+    },
+    {
+      "account": "default",
+      "app": "ex-rails-prometheus",
+      "cloudProvider": "kubernetes",
+      "kinds": [
+        "deployment",
+        "service",
+        "ServiceMonitor"
+      ],
+      "labelSelectors": {
+        "selectors": [
+          {
+            "key": "app",
+            "kind": "EQUALS",
+            "values": [
+              "ex-rails-prometheus-canary"
+            ]
+          }
+        ]
+      },
+      "location": "default",
+      "mode": "label",
+      "name": "Delete Canary",
+      "options": {
+        "cascading": true
+      },
+      "refId": "11",
+      "requisiteStageRefIds": [
+        "12"
+      ],
+      "type": "deleteManifest"
+    },
+    {
+      "analysisType": "realTime",
+      "canaryConfig": {
+        "canaryAnalysisIntervalMins": "2",
+        "canaryConfigId": "08f917f0-099c-482e-a8aa-0f2f0e6c2ec7",
+        "lifetimeDuration": "PT0H2M",
+        "metricsAccountName": "app-cluster",
+        "scopes": [
+          {
+            "controlLocation": "default",
+            "controlScope": "ex-rails-prometheus-baseline",
+            "experimentLocation": "default",
+            "experimentScope": "ex-rails-prometheus-canary",
+            "extendedScopeParams": {},
+            "scopeName": "default"
+          }
+        ],
+        "scoreThresholds": {
+          "marginal": "50",
+          "pass": "50"
+        },
+        "storageAccountName": "gcs-canary"
+      },
+      "name": "Canary Analysis",
+      "refId": "12",
+      "requisiteStageRefIds": [
+        "7",
+        "2"
+      ],
+      "type": "kayentaCanary"
+    }
+  ],
+  "triggers": [],
+  "updateTs": "1573793050000"
+}
